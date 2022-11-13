@@ -11,53 +11,78 @@ using System.Windows.Forms;
 namespace Megalaba_Forms
 {
     public partial class Form1 : Form
-    {
-
+    {//rock, paper, scissors game with COM
+        static Type com1 = Type.GetTypeFromProgID("Megalaba_COM.ComClass1");
+        static dynamic com1Instance = Activator.CreateInstance(com1);
 
         int rounds = 3;
         int timerPerRound = 6;
 
         bool gameover = false;
 
-        string[] CPUchoiceList = {"rock", "paper", "scissor", "paper", "scissor", "rock" };
+        
 
-        int randomNumber = 0;
+        
 
-        Random rnd = new Random();
-
-        string CPUchoice;
+        string opponentchoice;
 
         string playerChoice;
 
         int playerwins;
-        int AIwins;
+        int opponentwins;
 
 
         public Form1()
         {
             InitializeComponent();
-            countDownTimer.Enabled = true;
+            countDownTimer.Enabled = false;
             playerChoice = "none";
             txtTime.Text = "5";
-            
+            btnPaper.Enabled = false;
+            btnRock.Enabled = false;
+            btnScissors.Enabled = false;
+            Thread WaitForOpponentThread = new Thread(WaitForOpponent);
+            WaitForOpponentThread.Start();
+            WaitForOpponentThread.Join();
         }
-
+        private void WaitForOpponent()
+        {
+                while (true)
+                {
+                    if (com1Instance.IsReady())
+                    {
+                    OpponentLabel.Text = "Your Opponent";
+                    btnPaper.Enabled = true;
+                    btnRock.Enabled = true;
+                    btnScissors.Enabled = true;
+                    break;
+                    }
+                    else
+                    {
+                        
+                    }
+                    Thread.Sleep(200);
+                }
+        }
         private void btnRock_Click(object sender, EventArgs e)
         {
             picPlayer.Image = Properties.Resources.rock;
             playerChoice = "rock";
+            com1Instance.SendData(0x11);
         }
 
         private void btnPaper_Click(object sender, EventArgs e)
         {
             picPlayer.Image = Properties.Resources.paper;
             playerChoice = "paper";
+            com1Instance.SendData(0x12);
         }
 
         private void btnScissors_Click(object sender, EventArgs e)
         {
             picPlayer.Image = Properties.Resources.scissors;
             playerChoice = "scissor";
+            com1Instance.SendData(0x13);
         }
 
         private void countDownTimer_Tick(object sender, EventArgs e)
@@ -72,11 +97,10 @@ namespace Megalaba_Forms
                 countDownTimer.Enabled = false;
                 timerPerRound = 6;
 
-                randomNumber = rnd.Next(0, CPUchoiceList.Length);
+                
+                opponentchoice ;
 
-                CPUchoice = CPUchoiceList[randomNumber];
-
-                switch(CPUchoice)
+                switch(opponentchoice)
                 {
                     case "rock":
                         picCPU.Image = Properties.Resources.rock;
@@ -96,13 +120,13 @@ namespace Megalaba_Forms
                 }
                 else
                 {
-                    if(playerwins > AIwins)
+                    if(playerwins > opponentwins)
                     {
                         MessageBox.Show("Player Wins This Game");
                     }
                     else
                     {
-                        MessageBox.Show("CPU Wins This Game");
+                        MessageBox.Show("You loose This Game");
                     }
 
                     gameover = true;
@@ -115,76 +139,6 @@ namespace Megalaba_Forms
 
         private void checkGame()
         {
-
-            // AI and player win rules
-
-            if(playerChoice == "rock" && CPUchoice == "paper")
-            {
-
-                AIwins += 1;
-
-                rounds -= 1;
-
-                MessageBox.Show("CPU Wins, Paper Covers Rocks");
-
-            }
-            else if(playerChoice == "scissor" && CPUchoice == "rock")
-            {
-                AIwins += 1;
-
-                rounds -= 1;
-
-                MessageBox.Show("CPU Wins, Rock Breaks Scissors");
-            }
-            else if (playerChoice == "paper" && CPUchoice == "scissor")
-            {
-
-                AIwins += 1;
-
-                rounds -= 1;
-
-                MessageBox.Show("CPU Wins, Scissor cuts paper");
-
-            }
-            else if(playerChoice == "rock" && CPUchoice == "scissor")
-            {
-
-                playerwins += 1;
-
-                rounds -= 1;
-
-                MessageBox.Show("Player Wins, Rock Breaks Scissors");
-
-            }
-            else if (playerChoice == "paper" && CPUchoice == "rock")
-            {
-
-                playerwins += 1;
-
-                rounds -= 1;
-
-                MessageBox.Show("Player Wins, Paper Covers Rocks");
-
-            }
-            else if (playerChoice == "scissor" && CPUchoice == "paper")
-            {
-                playerwins += 1;
-
-                rounds -= 1;
-
-                MessageBox.Show("Player Wins, Scissor cuts paper");
-
-            }
-            else if(playerChoice == "none")
-            {
-                MessageBox.Show("Make your Choice");
-            }
-            else
-            {
-                MessageBox.Show("Draw");
-
-            }
-
             startNextRound();
         }
 
@@ -199,7 +153,7 @@ namespace Megalaba_Forms
                 return;
             }
 
-            txtMessage.Text = "Player: " + playerwins + " - " + "CPU: " + AIwins;
+            txtMessage.Text = "Player: " + playerwins + " - " + "CPU: " + opponentwins;
 
             playerChoice = "none";
 
@@ -212,9 +166,9 @@ namespace Megalaba_Forms
         private void restartGame(object sender, EventArgs e)
         {
             playerwins = 0;
-            AIwins = 0;
+            opponentwins = 0;
             rounds = 3;
-            txtMessage.Text = "Player: " + playerwins + " - " + "CPU: " + AIwins;
+            txtMessage.Text = "Player: " + playerwins + " - " + "CPU: " + opponentwins;
 
             playerChoice = "none";
             txtTime.Text = "5";

@@ -9,8 +9,7 @@ namespace Megalaba_Forms
 
     static class Program
     {
-        static Type com1 = Type.GetTypeFromProgID("Megalaba_COM.ComClass1");
-        static dynamic com1Instance = Activator.CreateInstance(com1);
+        
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
