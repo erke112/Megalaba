@@ -41,6 +41,7 @@
             this.OpponentLabel = new System.Windows.Forms.Label();
             this.picCPU = new System.Windows.Forms.PictureBox();
             this.picPlayer = new System.Windows.Forms.PictureBox();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picCPU)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picPlayer)).BeginInit();
             this.SuspendLayout();
@@ -82,12 +83,12 @@
             // 
             this.txtMessage.AutoSize = true;
             this.txtMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtMessage.Location = new System.Drawing.Point(381, 20);
+            this.txtMessage.Location = new System.Drawing.Point(349, 20);
             this.txtMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(206, 26);
+            this.txtMessage.Size = new System.Drawing.Size(259, 26);
             this.txtMessage.TabIndex = 2;
-            this.txtMessage.Text = "Player: 0 - CPU: 0";
+            this.txtMessage.Text = "Player: 0 - Opponent: 0";
             this.txtMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // roundsText
@@ -99,7 +100,7 @@
             this.roundsText.Name = "roundsText";
             this.roundsText.Size = new System.Drawing.Size(113, 26);
             this.roundsText.TabIndex = 2;
-            this.roundsText.Text = "Rounds 3";
+            this.roundsText.Text = "Rounds 0";
             // 
             // button4
             // 
@@ -138,7 +139,7 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Player";
             // 
-            // label4
+            // OpponentLabel
             // 
             this.OpponentLabel.AutoSize = true;
             this.OpponentLabel.Location = new System.Drawing.Point(626, 27);
@@ -171,6 +172,11 @@
             this.picPlayer.TabIndex = 1;
             this.picPlayer.TabStop = false;
             // 
+            // timer
+            // 
+            this.timer.Interval = 500;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
@@ -190,6 +196,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Rock Paper Scissors ";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picCPU)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picPlayer)).EndInit();
             this.ResumeLayout(false);
@@ -211,6 +218,7 @@
         private System.Windows.Forms.Timer countDownTimer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label OpponentLabel;
+        private System.Windows.Forms.Timer timer;
     }
 }
 

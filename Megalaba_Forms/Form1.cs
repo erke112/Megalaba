@@ -14,15 +14,15 @@ namespace Megalaba_Forms
     {//rock, paper, scissors game with COM
         static Type com1 = Type.GetTypeFromProgID("Megalaba_COM.ComClass1");
         static dynamic com1Instance = Activator.CreateInstance(com1);
-
-        int rounds = 3;
+        static int TimeInTicks=0;
+        int rounds = 0;
         int timerPerRound = 6;
 
         bool gameover = false;
 
-        
 
-        
+
+
 
         string opponentchoice;
 
@@ -38,31 +38,38 @@ namespace Megalaba_Forms
             countDownTimer.Enabled = false;
             playerChoice = "none";
             txtTime.Text = "5";
+            timer.Enabled = false;
             btnPaper.Enabled = false;
             btnRock.Enabled = false;
             btnScissors.Enabled = false;
-            Thread WaitForOpponentThread = new Thread(WaitForOpponent);
-            WaitForOpponentThread.Start();
-            WaitForOpponentThread.Join();
+            this.ResumeLayout();
+            this.PerformLayout();
+            //Thread WaitForOpponentThread = new Thread(WaitForOpponent);
+            //WaitForOpponentThread.Start();
+            //WaitForOpponentThread.Join();
+            //WaitForOpponent();
         }
         private void WaitForOpponent()
         {
-                while (true)
+            while (true)
+            {
+                if (com1Instance.IsReady())
                 {
-                    if (com1Instance.IsReady())
-                    {
                     OpponentLabel.Text = "Your Opponent";
                     btnPaper.Enabled = true;
                     btnRock.Enabled = true;
                     btnScissors.Enabled = true;
+                    timer.Enabled = true;
+                    rounds++;
+                    roundsText.Text = "Rounds: " + rounds;
                     break;
-                    }
-                    else
-                    {
-                        
-                    }
-                    Thread.Sleep(200);
                 }
+                else
+                {
+
+                }
+                Thread.Sleep(200);
+            }
         }
         private void btnRock_Click(object sender, EventArgs e)
         {
@@ -86,21 +93,21 @@ namespace Megalaba_Forms
         }
 
         private void countDownTimer_Tick(object sender, EventArgs e)
-        {
+        {/*
             timerPerRound -= 1;
 
             txtTime.Text = timerPerRound.ToString();
             roundsText.Text = "Rounds: " + rounds;
 
-            if(timerPerRound < 1)
+            if (timerPerRound < 1)
             {
                 countDownTimer.Enabled = false;
                 timerPerRound = 6;
 
-                
-                opponentchoice ;
 
-                switch(opponentchoice)
+                opponentchoice;
+
+                switch (opponentchoice)
                 {
                     case "rock":
                         picCPU.Image = Properties.Resources.rock;
@@ -114,13 +121,13 @@ namespace Megalaba_Forms
                 }
 
 
-                if(rounds > 0)
+                if (rounds > 0)
                 {
                     checkGame();
                 }
                 else
                 {
-                    if(playerwins > opponentwins)
+                    if (playerwins > opponentwins)
                     {
                         MessageBox.Show("Player Wins This Game");
                     }
@@ -133,7 +140,7 @@ namespace Megalaba_Forms
                 }
 
 
-            }
+            }*/
         }
 
 
@@ -179,6 +186,54 @@ namespace Megalaba_Forms
             picCPU.Image = Properties.Resources.qq;
 
             gameover = false;
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            TimeInTicks++;
+            txtTime.Text = (TimeInTicks / 5).ToString();
+            if (playerChoice != "none")
+            {
+                bool[] flag;
+                flag = com1Instance.IsChoisesMade();
+                if (flag[0] == true)
+                {
+                    TimeInTicks = 0;
+                    timer.Enabled = false;
+                    btnPaper.Enabled = false;
+                    btnRock.Enabled = false;
+                    btnScissors.Enabled = false;
+                    DialogResult result;
+                    if (flag[2] == true)
+                    {
+                        result = MessageBox.Show("Draw!!!", "Draw", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        if (flag[1] == true)
+                        {
+                            result = MessageBox.Show("You won!!!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            result = MessageBox.Show("You lost!!!", "Sorry", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    if (result == DialogResult.OK || result == DialogResult.Cancel)
+                    {
+                        //Thread WaitForOpponentThread = new Thread(WaitForOpponent);
+                        //WaitForOpponentThread.Start();
+                        //WaitForOpponentThread.Join();
+                        WaitForOpponent();
+                    }
+                    
+                }
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //WaitForOpponent();
         }
     }
 }
