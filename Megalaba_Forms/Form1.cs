@@ -10,12 +10,13 @@ using System.Windows.Forms;
 
 namespace Megalaba_Forms
 {
+
     public partial class Form1 : Form
     {//rock, paper, scissors game with COM
         static Type com1 = Type.GetTypeFromProgID("Megalaba_COM.ComClass1");
         static dynamic com1Instance = Activator.CreateInstance(com1);
-        static int TimeInTicks=0;
-        int rounds = 0;
+        static int TimeInTicks = 0;
+        static int rounds = 0;
         int timerPerRound = 6;
 
         bool gameover = false;
@@ -37,17 +38,19 @@ namespace Megalaba_Forms
             InitializeComponent();
             countDownTimer.Enabled = false;
             playerChoice = "none";
-            txtTime.Text = "5";
+            txtTime.Text = "0";
             timer.Enabled = false;
             btnPaper.Enabled = false;
             btnRock.Enabled = false;
             btnScissors.Enabled = false;
             this.ResumeLayout();
             this.PerformLayout();
+            //this.Show();
+            //Thread.Sleep(1000);
             //Thread WaitForOpponentThread = new Thread(WaitForOpponent);
             //WaitForOpponentThread.Start();
             //WaitForOpponentThread.Join();
-            //WaitForOpponent();
+            // WaitForOpponent();
         }
         private void WaitForOpponent()
         {
@@ -174,9 +177,10 @@ namespace Megalaba_Forms
         {
             playerwins = 0;
             opponentwins = 0;
-            rounds = 3;
+            //rounds = 3;
+            rounds = 0;
             txtMessage.Text = "Player: " + playerwins + " - " + "CPU: " + opponentwins;
-
+            TimeInTicks = 0;
             playerChoice = "none";
             txtTime.Text = "5";
 
@@ -213,11 +217,14 @@ namespace Megalaba_Forms
                         if (flag[1] == true)
                         {
                             result = MessageBox.Show("You won!!!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            playerwins++;
                         }
                         else
                         {
                             result = MessageBox.Show("You lost!!!", "Sorry", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            opponentwins++;
                         }
+                        txtMessage.Text = "Player: " + playerwins + " - " + "Opponent: " + opponentwins;
                     }
                     if (result == DialogResult.OK || result == DialogResult.Cancel)
                     {
@@ -226,14 +233,34 @@ namespace Megalaba_Forms
                         //WaitForOpponentThread.Join();
                         WaitForOpponent();
                     }
-                    
+
                 }
             }
         }
 
+
+        private void WaitForOpponentEv()
+        {
+            WaitForOpponent();
+        }
+        //new event
+        
         private void Form1_Load(object sender, EventArgs e)
         {
-            //WaitForOpponent();
+            //new thread, wait 1 s
+            Thread WaitForOpponentThread = new Thread(() => { 
+                Thread.Sleep(1000);
+                WaitForOpponentDelegate waitForOpponentDelegate = new WaitForOpponentDelegate(WaitForOpponentEv);
+                this.Invoke(waitForOpponentDelegate);
+            });
+            WaitForOpponentThread.Start();
+            //WaitForOpponentThread.Join();
+            //continue main thread
+            
+
+
+            
         }
     }
+    public delegate void WaitForOpponentDelegate();
 }
