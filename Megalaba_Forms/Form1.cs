@@ -179,12 +179,12 @@ namespace Megalaba_Forms
             opponentwins = 0;
             //rounds = 3;
             rounds = 0;
-            txtMessage.Text = "Player: " + playerwins + " - " + "CPU: " + opponentwins;
+            txtMessage.Text = "Player: " + playerwins + " - " + "Opponent: " + opponentwins;
             TimeInTicks = 0;
             playerChoice = "none";
-            txtTime.Text = "5";
+            //txtTime.Text = "5";
 
-            countDownTimer.Enabled = true;
+            //countDownTimer.Enabled = true;
 
             picPlayer.Image = Properties.Resources.qq;
             picCPU.Image = Properties.Resources.qq;
