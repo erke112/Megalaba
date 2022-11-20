@@ -19,7 +19,7 @@ namespace Megalaba_COM
         bool IsReady();
         bool[] IsChoisesMade();
         void SendData(byte data);
-        byte[] GetData();
+        byte GetData();
     }
 
     [Guid("7BD20046-DF8C-44A6-8F6B-687FAA26FA72"),
@@ -240,15 +240,32 @@ namespace Megalaba_COM
                 }
             }
         }
-        public byte[] GetData()
+        public byte GetData()
         {
-            byte[] temp;
-            using (MemoryMappedViewStream stream = mmf.CreateViewStream(0, 0))
+            byte[] state;
+            using (MemoryMappedViewStream stream = mmf_ready.CreateViewStream(0, 0))
             {
                 BinaryReader reader = new BinaryReader(stream);
-                temp = reader.ReadBytes(2);
-                return temp;
+                state = reader.ReadBytes(1);
             }
+            if (state[0] == 0x32 || state[0] == 0x23)
+            {
+                byte[] temp;
+                using (MemoryMappedViewStream stream = mmf.CreateViewStream(0, 0))
+                {
+                    BinaryReader reader = new BinaryReader(stream);
+                    temp = reader.ReadBytes(2);
+                }
+                if (mode == false)
+                {
+                    return temp[1];
+                }
+                else
+                {
+                    return temp[0];
+                }
+            }
+            else return 0x10;
         }
     }
 }
