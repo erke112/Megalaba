@@ -214,14 +214,31 @@ namespace Megalaba_Forms
                     }
                     else
                     {
+                        byte opponentChoice = com1Instance.GetData();
+                        string opponentChoiceString = "";
+                        switch (opponentChoice)
+                        {
+                            case 0x11:
+                                opponentChoiceString = "rock";
+                                break;
+                            case 0x12:
+                                opponentChoiceString = "paper";
+                                break;
+                            case 0x13:
+                                opponentChoiceString = "scissor";
+                                break;
+                            case 0x10:
+                                opponentChoiceString = "Error";
+                                break;
+                        }
                         if (flag[1] == true)
                         {
-                            result = MessageBox.Show("You won!!!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            result = MessageBox.Show("You won!!! Opponent's choise: "+opponentChoiceString, "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             playerwins++;
                         }
                         else
                         {
-                            result = MessageBox.Show("You lost!!!", "Sorry", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            result = MessageBox.Show("You lost!!! Opponent's choise: "+opponentChoiceString, "Sorry", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             opponentwins++;
                         }
                         txtMessage.Text = "Player: " + playerwins + " - " + "Opponent: " + opponentwins;

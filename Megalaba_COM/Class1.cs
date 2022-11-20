@@ -40,7 +40,7 @@ namespace Megalaba_COM
         //public static StreamWriter writer = new StreamWriter(mmf.CreateViewStream(), System.Text.Encoding.ASCII);
         public static string data = "";
         public static bool mode;//true - connect to game, false - create
-
+        public static byte LastOpponentChoise = 0x10;
         public ComClass1()
         {
             try
@@ -144,6 +144,15 @@ namespace Megalaba_COM
                     BinaryReader reader1 = new BinaryReader(stream1);
                     vibory = reader1.ReadBytes(2);
                 }//0x11 - rock, 0x12 - paper, 0x13 - scissors
+
+                if (mode == false)
+                {
+                    LastOpponentChoise = vibory[1];
+                }
+                else
+                {
+                    LastOpponentChoise = vibory[0];
+                }
                 if ((vibory[0] == 0x11 && vibory[1] == 0x11)
                     || (vibory[0] == 0x12 && vibory[1] == 0x12)
                     || (vibory[0] == 0x13 && vibory[1] == 0x13))
@@ -241,7 +250,7 @@ namespace Megalaba_COM
             }
         }
         public byte GetData()
-        {
+        {/*
             byte[] state;
             using (MemoryMappedViewStream stream = mmf_ready.CreateViewStream(0, 0))
             {
@@ -266,6 +275,8 @@ namespace Megalaba_COM
                 }
             }
             else return 0x10;
+            */
+            return LastOpponentChoise;
         }
     }
 }
